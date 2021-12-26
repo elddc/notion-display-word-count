@@ -1,4 +1,4 @@
-#Notion Word Count
+# Notion Word Count
 
 Displays a word counter in the bottom right corner of the screen.
 
