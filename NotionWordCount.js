@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Notion Word Count
 // @namespace    elddc
-// @version      1.0
+// @version      1.1
 // @description  Display a simple word counter in Notion
 // @author       Elddc
 // @match        https://www.notion.so/*
@@ -33,16 +33,37 @@ document.body.appendChild(wordCount);
 //fill word count element
 function updateWordCount () {
 	try {
-		let count = document.querySelector('.notion-page-content').innerText.match(/[^\s]+/g).length;
+		let text = '';
+		let selection = document.getSelection(); //display word count of selection only
+
+		if (selection.type === 'Range') { //words are selected (not caret)
+			if (selection.isCollapsed) { //blocks are selected
+				//get contents of selected blocks
+				selection = document.querySelectorAll('.notion-selectable-halo');
+				for (const block of selection) {
+					text += block.previousSibling.innerText;
+				}
+			} else { //words are selected
+				text = selection.toString();
+			}
+		}
+		else {
+			//get word count of entire page
+			text = document.querySelector('.notion-page-content').innerText;
+		}
+
+		//count words and display
+		const count = text.match(/[^\s]+/g).length;
 		wordCount.innerText = `${count} word${count === 1 ? '' : 's'}`;
 	} catch (err) {
 		console.log('No content detected. Are you on a database page?'); //some pages do not have .notion-page-content
-		wordCount.innerText = '';
+		wordCount.innerText = ''; //empty word count display
 	}
 }
 
-//updates word count 500 seconds after last key press
-window.addEventListener('keyup', debounce(updateWordCount, 500));
+//updates word count 500 seconds after last key press or selection change
+document.addEventListener('keyup', debounce(updateWordCount, 500));
+document.addEventListener('selectionchange', debounce(updateWordCount, 500));
 setTimeout(updateWordCount, 500); //initial word count
 
 //update word count after navigation between pages
