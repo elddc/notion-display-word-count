@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Notion Word Count
 // @namespace    elddc
-// @version      1.1
+// @version      1.2
 // @description  Display a simple word counter in Notion
 // @author       Elddc
 // @match        https://www.notion.so/*
@@ -36,18 +36,18 @@ function updateWordCount () {
 		let text = '';
 		let selection = document.getSelection(); //display word count of selection only
 
-		if (selection.type === 'Range') { //words are selected (not caret)
-			if (selection.isCollapsed) { //blocks are selected
-				//get contents of selected blocks
+		if (selection.type === 'Range') { //words/nodes selected (not caret)
+			if (selection.isCollapsed) { //nodes
+				//get contents of selected nodes
 				selection = document.querySelectorAll('.notion-selectable-halo');
 				for (const block of selection) {
 					text += block.previousSibling.innerText;
 				}
-			} else { //words are selected
+			} else { //words
 				text = selection.toString();
 			}
 		}
-		else {
+		if (!text) { //no selection or selection empty
 			//get word count of entire page
 			text = document.querySelector('.notion-page-content').innerText;
 		}
