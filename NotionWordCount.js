@@ -5,7 +5,7 @@
 // @description  Display a simple word counter in Notion
 // @author       Elddc
 // @match        https://www.notion.so/*
-// @icon         https://www.google.com/s2/favicons?domain=notion.so
+// @icon         https://www.notion.so/front-static/favicon.ico
 // @grant        none
 // ==/UserScript==
 
